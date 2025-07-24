@@ -1,0 +1,6 @@
+{"properties": [{
+  "name": "mail.integracao",
+  "type": "java.lang.String",
+  "description": "Serviço a ser usado para envio de e-mails.",
+  "defaultValue": "OCI"
+}]}
