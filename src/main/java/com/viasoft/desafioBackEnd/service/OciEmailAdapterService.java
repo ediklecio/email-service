@@ -23,18 +23,21 @@ public class OciEmailAdapterService {
             return null;
         }
         return new EmailOciDTO(
-                adaptData(emailData.getEmailDestinatario(), 40),
-                adaptData(emailData.getNomeDestinatario(), 50),
-                adaptData(emailData.getEmailRemetente(), 40),
-                adaptData(emailData.getAssunto(), 100),
-                adaptData(emailData.getConteudo(), 250)
+                adaptData(emailData.getEmailDestinatario(), 40, "E-mail destinatário"),
+                adaptData(emailData.getNomeDestinatario(), 50, "Nome destinatário"),
+                adaptData(emailData.getEmailRemetente(), 40, "E-mail remetente"),
+                adaptData(emailData.getAssunto(), 100, "Assunto"),
+                adaptData(emailData.getConteudo(), 250, "Conteúdo")
         );
     }
 
-    private String adaptData(String inputData, int limit) {
-        if (inputData == null) {
-            return null;
+    private String adaptData(String inputData, int limit, String fieldName) {
+        if (inputData == null || inputData.trim().isEmpty()) {
+            throw new IllegalArgumentException(String.format("O campo '%s' é obrigatório.", fieldName));
         }
-        return inputData.length() > limit ? inputData.substring(0, limit) : inputData;
+        if (inputData.length() > limit) {
+            throw new IllegalArgumentException(String.format("O campo '%s' excede o limite de %d caracteres.", fieldName, limit));
+        }
+        return inputData;
     }
 }

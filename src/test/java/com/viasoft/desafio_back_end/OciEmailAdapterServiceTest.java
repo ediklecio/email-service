@@ -10,10 +10,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.logging.Logger;
+
+import org.hibernate.validator.internal.util.logging.Log_.logger;
+
 @DisplayName("OciEmailAdapterService Test")
 class OciEmailAdapterServiceTest {
 
     private OciEmailAdapterService adapterService;
+        Logger logger = Logger.getLogger(OciEmailAdapterServiceTest.class.getName());
 
     @BeforeEach
     void setUp() {
@@ -37,8 +42,7 @@ class OciEmailAdapterServiceTest {
                 "Nome Destinatario",
                 "remetente@example.com",
                 "Assunto do E-mail",
-                "Corpo do e-mail."
-        );
+                "Corpo do e-mail.");
 
         // Act
         // Assumindo que o método adapt() retorna um EmailOciDTO
@@ -52,8 +56,7 @@ class OciEmailAdapterServiceTest {
                 () -> assertEquals("Nome Destinatario", result.getRecipientName()),
                 () -> assertEquals("remetente@example.com", result.getSenderEmail()),
                 () -> assertEquals("Assunto do E-mail", result.getSubject()),
-                () -> assertEquals("Corpo do e-mail.", result.getBody())
-        );
+                () -> assertEquals("Corpo do e-mail.", result.getBody()));
     }
 
     @Test
@@ -67,68 +70,19 @@ class OciEmailAdapterServiceTest {
     }
 
     @Test
-    @DisplayName("Deve mapear campos nulos de EmailData para campos nulos em EmailOciDTO")
-    void adapt_quandoCamposForemNulos_deveMapearComoNulos() {
-        // Arrange
-        EmailData emailData = new EmailData(null, null, null, null, null);
-
-        // Act
-        EmailOciDTO result = adapterService.adapt(emailData);
-
-        // Assert
-        assertNotNull(result);
-        assertAll("Verifica se campos nulos são mapeados corretamente",
-                () -> assertNull(result.getRecipientEmail()),
-                () -> assertNull(result.getRecipientName()),
-                () -> assertNull(result.getSenderEmail()),
-                () -> assertNull(result.getSubject()),
-                () -> assertNull(result.getBody())
-        );
-    }
-
-    @Test
-    @DisplayName("Deve truncar campos que excedem os limites de caracteres do OCI")
-    void adapt_quandoCamposExcedemLimite_deveTruncar() {
+    @DisplayName("Deve lançar exceção quando campo excede o limite de caracteres")
+    void adapt_quandoCampoExcedeLimite_deveLancarExcecao() {
         // Arrange
         EmailData emailData = new EmailData(
-                createString('a', 41), // limit 40
-                createString('b', 51),  // limit 50
-                createString('c', 41),    // limit 40
-                createString('d', 101), // limit 100
-                createString('e', 251)  // limit 250
-        );
+                createString('a', 41), // Excede o limite de 40 caracteres
+                "Nome Destinatario",
+                "remetente@example.com",
+                createString('a', 101), // Excede o limite de 100 caracteres
+                "Corpo do e-mail.");
 
-        // Act
-        EmailOciDTO result = adapterService.adapt(emailData);
-
-        // Assert
-        assertNotNull(result);
-        assertAll("Verifica se todos os campos foram truncados para o limite correto do OCI",
-                () -> assertEquals(40, result.getRecipientEmail().length(), "Email do destinatário deve ser truncado"),
-                () -> assertEquals(50, result.getRecipientName().length(), "Nome do destinatário deve ser truncado"),
-                () -> assertEquals(40, result.getSenderEmail().length(), "Email do remetente deve ser truncado"),
-                () -> assertEquals(100, result.getSubject().length(), "Assunto deve ser truncado"),
-                () -> assertEquals(250, result.getBody().length(), "Conteúdo deve ser truncado")
-        );
+        assertThrows(IllegalArgumentException.class, () -> {
+            adapterService.adapt(emailData);
+        });
     }
 
-    @Test
-    @DisplayName("Não deve truncar campos que estão exatamente no limite de caracteres do OCI")
-    void adapt_quandoCamposEstaoNoLimite_naoDeveTruncar() {
-        // Arrange
-        EmailData emailData = new EmailData(createString('a', 40), createString('b', 50), createString('c', 40), createString('d', 100), createString('e', 250));
-
-        // Act
-        EmailOciDTO result = adapterService.adapt(emailData);
-
-        // Assert
-        assertNotNull(result);
-        assertAll("Verifica se campos no limite não são truncados",
-                () -> assertEquals(40, result.getRecipientEmail().length()),
-                () -> assertEquals(50, result.getRecipientName().length()),
-                () -> assertEquals(40, result.getSenderEmail().length()),
-                () -> assertEquals(100, result.getSubject().length()),
-                () -> assertEquals(250, result.getBody().length())
-        );
-    }
 }
