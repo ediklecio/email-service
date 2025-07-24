@@ -58,6 +58,7 @@ public class EmailTest {
 	@Test
 	void shouldFailWhenAnyFieldIsBlank() {
 
+		EmailData email = new EmailData("", "Nome Destinatario", "remetente@example.com", "Assunto do Email", "Conteúdo do email.");
 		Set<ConstraintViolation<EmailData>> violations = validator.validate(email);
 
 		assertFalse(violations.isEmpty());
