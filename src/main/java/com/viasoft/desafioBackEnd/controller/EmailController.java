@@ -32,6 +32,8 @@ public class EmailController {
             return ResponseEntity.noContent()
                                  .header("Serialized-Data", serializedData)
                                  .build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao processar sua solicitação: " + e.getMessage());
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao processar sua solicitação: " + e.getMessage());
         } 
