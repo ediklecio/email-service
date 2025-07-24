@@ -34,6 +34,6 @@ public class EmailController {
                                  .build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao processar sua solicitação: " + e.getMessage());
-        }
+        } 
     }
 }

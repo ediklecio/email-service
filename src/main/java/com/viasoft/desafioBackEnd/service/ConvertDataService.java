@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viasoft.desafioBackEnd.enums.EmailProvider;
+
+import jakarta.validation.Validator;
 import java.util.Arrays;
 import com.viasoft.desafioBackEnd.model.EmailData;
 
@@ -20,12 +22,14 @@ public class ConvertDataService {
     private final String mailIntegracao;
     private final AwsEmailAdapterService awsEmailAdapterService;
     private final OciEmailAdapterService ociEmailAdapterService;
+    private final Validator validator;
 
     public ConvertDataService(
             ObjectMapper objectMapper,
             @Value("${mail.integracao}") String mailIntegracao,
             AwsEmailAdapterService awsEmailAdapterService,
-            OciEmailAdapterService ociEmailAdapterService) {
+            OciEmailAdapterService ociEmailAdapterService,
+            Validator validator) {
 
         try {
             EmailProvider.valueOf(mailIntegracao.toUpperCase());
@@ -40,6 +44,7 @@ public class ConvertDataService {
         this.mailIntegracao = mailIntegracao;
         this.awsEmailAdapterService = awsEmailAdapterService;
         this.ociEmailAdapterService = ociEmailAdapterService;
+        this.validator = validator;
     }
 
     public String convertData(EmailData emailData) {
@@ -58,12 +63,14 @@ public class ConvertDataService {
                 throw new UnsupportedOperationException(errorMessage);
         }
 
+        // validate(dataToSerialize);
+
         String emailResult = serializeData(dataToSerialize);
         logger.info("Dados do e-mail convertidos com sucesso: {}", emailResult);
         return emailResult;
     }
 
-     private <T> String serializeData(T data) {
+    private <T> String serializeData(T data) {
         try {
             return objectMapper.writeValueAsString(data);
         } catch (JsonProcessingException e) {
