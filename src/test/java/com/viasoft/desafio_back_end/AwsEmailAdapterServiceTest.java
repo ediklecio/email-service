@@ -4,10 +4,10 @@ import com.viasoft.desafioBackEnd.dto.EmailAwsDTO;
 import com.viasoft.desafioBackEnd.model.EmailData;
 import com.viasoft.desafioBackEnd.service.AwsEmailAdapterService;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,8 +33,7 @@ class AwsEmailAdapterServiceTest {
                 "Nome Destinatario",
                 "remetente@example.com",
                 "Assunto do E-mail",
-                "Corpo do e-mail."
-        );
+                "Corpo do e-mail.");
         EmailAwsDTO result = adapterService.adapt(emailData);
 
         assertNotNull(result);
@@ -43,8 +42,7 @@ class AwsEmailAdapterServiceTest {
                 () -> assertEquals("Nome Destinatario", result.getRecipientName()),
                 () -> assertEquals("remetente@example.com", result.getSender()),
                 () -> assertEquals("Assunto do E-mail", result.getSubject()),
-                () -> assertEquals("Corpo do e-mail.", result.getContent())
-        );
+                () -> assertEquals("Corpo do e-mail.", result.getContent()));
     }
 
     @Test
@@ -62,10 +60,10 @@ class AwsEmailAdapterServiceTest {
         // Arrange
         EmailData emailData = new EmailData(
                 createString('b', 34) + "@example.com", // > 45
-                createString('b', 71),  // Nome Destinatário > 60
+                createString('b', 71), // Nome Destinatário > 60
                 createString('b', 34) + "@example.com", // > 45
-                createString('b', 121),  // Nome Destinatário > 120
-                createString('b', 257)  // Content > 256
+                createString('b', 121), // Nome Destinatário > 120
+                createString('b', 257) // Content > 256
         );
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {

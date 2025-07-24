@@ -26,16 +26,9 @@ public class EmailController {
     @Operation(summary = "Recebe os dados do e-mail", description = "Endpoint para receber os dados do e-mail a ser enviado.")
     @ResponseStatus(HttpStatus.NO_CONTENT) 
     public ResponseEntity<String> receiveEmailData(@Valid @RequestBody EmailData emailData) {
-        
-        try {
-            String serializedData = convertDataService.convertData(emailData);
-            return ResponseEntity.noContent()
-                                 .header("Serialized-Data", serializedData)
-                                 .build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao processar sua solicitação: " + e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao processar sua solicitação: " + e.getMessage());
-        } 
+        String serializedData = convertDataService.convertData(emailData);
+        return ResponseEntity.noContent()
+                             .header("Serialized-Data", serializedData)
+                             .build();
     }
 }
