@@ -23,26 +23,22 @@ public class ConvertDataService {
         try {
             EmailProvider.valueOf(mailIntegracao.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalStateException(
-                    String.format("Configuração 'mail.integracao' inválida. O valor '%s' não é um provedor de e-mail válido. Valores aceitos: %s",
-                            mailIntegracao, Arrays.toString(EmailProvider.values())), e);
+            String errorMessage = String.format("Configuração 'mail.integracao' inválida. O valor '%s' não é um provedor de e-mail válido. Valores aceitos: %s",
+                    mailIntegracao, Arrays.toString(EmailProvider.values()));
+            throw new IllegalStateException(errorMessage, e);
         }
         this.objectMapper = objectMapper;
         this.mailIntegracao = mailIntegracao;
     }
 
     public String convertData(EmailData emailData) {
-        // Exemplo de como usar a propriedade injetada
         logger.info("Usando a integração de e-mail: {}", mailIntegracao);
 
-        
         try {
             return objectMapper.writeValueAsString(emailData);
         } catch (JsonProcessingException e) {
-            // É uma boa prática logar o erro e/ou lançar uma exceção de runtime.
-            logger.error("Erro ao serializar EmailData para JSON", e);
-            // Lançar uma exceção de runtime para que o Spring possa tratá-la (e.g., retornar um erro 500)
-            throw new RuntimeException("Erro ao processar os dados do e-mail.", e);
+            String errorMessage = "Falha ao serializar os dados do e-mail para o formato JSON.";
+            throw new RuntimeException(errorMessage, e);
         }
     }
 }
