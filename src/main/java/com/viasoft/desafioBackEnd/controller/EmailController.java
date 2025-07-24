@@ -1,6 +1,7 @@
-package com.viasoft.desafio_back_end.controller;
+package com.viasoft.desafioBackEnd.controller;
 
-import com.viasoft.desafio_back_end.model.EmailData;
+import com.viasoft.desafioBackEnd.model.EmailData;
+import com.viasoft.desafioBackEnd.service.ConvertDataService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,11 +18,19 @@ public class EmailController {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailController.class);
 
+    public EmailController(ConvertDataService convertDataService) {
+        this.convertDataService = convertDataService;
+    }
+
+
     @PostMapping
     @Operation(summary = "Recebe os dados do e-mail", description = "Endpoint para receber os dados do e-mail a ser enviado.")
     public ResponseEntity<String> receiveEmailData(@Valid @RequestBody EmailData emailData) {
+        
         logger.info("Recebido novo pedido de e-mail para: {}", emailData.getEmailDestinatario());
-        logger.info("Assunto: {}", emailData.getAssunto());
+
+        String serializedData = convertDataService.convertData(emailData);
+        logger.info("Dados serializados: {}", serializedData);
 
         // Simula o processamento e retorna uma resposta de sucesso.
         return ResponseEntity.ok("Dados do e-mail recebidos com sucesso.");

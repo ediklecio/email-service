@@ -1,5 +1,5 @@
-package com.viasoft.desafio_back_end;
-import com.viasoft.desafio_back_end.model.EmailData;
+package com.viasoft.desafioBackEnd;
+import com.viasoft.desafioBackEnd.model.EmailData;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
