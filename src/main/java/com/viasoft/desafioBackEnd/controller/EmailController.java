@@ -24,11 +24,14 @@ public class EmailController {
 
     @PostMapping
     @Operation(summary = "Recebe os dados do e-mail", description = "Endpoint para receber os dados do e-mail a ser enviado.")
+    @ResponseStatus(HttpStatus.NO_CONTENT) 
     public ResponseEntity<String> receiveEmailData(@Valid @RequestBody EmailData emailData) {
         
         try {
             String serializedData = convertDataService.convertData(emailData);
-            return ResponseEntity.ok(serializedData);
+            return ResponseEntity.noContent()
+                                 .header("Serialized-Data", serializedData)
+                                 .build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao processar sua solicitação: " + e.getMessage());
         }
