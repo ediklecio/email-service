@@ -1,12 +1,16 @@
+package com.viasoft.desafioBackEnd.service;
+
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viasoft.desafioBackEnd.model.EmailData;
 
 @Service
 public class ConvertDataService {
     public String convertData(EmailData emailData) {
 
-        return "Converted Data: " + serializeData(emailData);
+        return serializeData(emailData);
     }
 
     private String serializeData(EmailData emailData) {

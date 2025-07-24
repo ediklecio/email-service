@@ -18,10 +18,11 @@ public class EmailController {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailController.class);
 
+    private final ConvertDataService convertDataService;
+
     public EmailController(ConvertDataService convertDataService) {
         this.convertDataService = convertDataService;
     }
-
 
     @PostMapping
     @Operation(summary = "Recebe os dados do e-mail", description = "Endpoint para receber os dados do e-mail a ser enviado.")
@@ -33,6 +34,6 @@ public class EmailController {
         logger.info("Dados serializados: {}", serializedData);
 
         // Simula o processamento e retorna uma resposta de sucesso.
-        return ResponseEntity.ok("Dados do e-mail recebidos com sucesso.");
+        return ResponseEntity.ok(serializedData);
     }
 }
