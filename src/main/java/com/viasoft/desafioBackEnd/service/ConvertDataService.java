@@ -18,24 +18,48 @@ public class ConvertDataService {
 
     private final ObjectMapper objectMapper;
     private final String mailIntegracao;
+    private final AwsEmailAdapterService awsEmailAdapterService;
 
-    public ConvertDataService(ObjectMapper objectMapper, @Value("${mail.integracao}") String mailIntegracao) {
+    public ConvertDataService(
+            ObjectMapper objectMapper,
+            @Value("${mail.integracao}") String mailIntegracao,
+            AwsEmailAdapterService awsEmailAdapterService) {
+
         try {
             EmailProvider.valueOf(mailIntegracao.toUpperCase());
         } catch (IllegalArgumentException e) {
-            String errorMessage = String.format("Configuração 'mail.integracao' inválida. O valor '%s' não é um provedor de e-mail válido. Valores aceitos: %s",
+            String errorMessage = String.format(
+                    "Configuração 'mail.integracao' inválida. O valor '%s' não é um provedor de e-mail válido. Valores aceitos: %s",
                     mailIntegracao, Arrays.toString(EmailProvider.values()));
             throw new IllegalStateException(errorMessage, e);
         }
+
         this.objectMapper = objectMapper;
         this.mailIntegracao = mailIntegracao;
+        this.awsEmailAdapterService = awsEmailAdapterService;
     }
 
     public String convertData(EmailData emailData) {
-        logger.info("Usando a integração de e-mail: {}", mailIntegracao);
+        Object dataToSerialize;
+        EmailProvider provider = EmailProvider.valueOf(mailIntegracao.toUpperCase());
 
+        switch (provider) {
+            case AWS:
+                dataToSerialize = awsEmailAdapterService.adapt(emailData);
+                break;
+            default:
+                String errorMessage = String.format("Provedor de e-mail '%s' não implementado.", mailIntegracao);
+                throw new UnsupportedOperationException(errorMessage);
+        }
+
+        String emailResult = serializeData(dataToSerialize);
+        logger.info("Dados do e-mail convertidos com sucesso: {}", emailResult);
+        return emailResult;
+    }
+
+     private <T> String serializeData(T data) {
         try {
-            return objectMapper.writeValueAsString(emailData);
+            return objectMapper.writeValueAsString(data);
         } catch (JsonProcessingException e) {
             String errorMessage = "Falha ao serializar os dados do e-mail para o formato JSON.";
             throw new RuntimeException(errorMessage, e);

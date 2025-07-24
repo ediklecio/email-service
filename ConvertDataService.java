@@ -14,15 +14,7 @@ public class ConvertDataService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public String convertData(EmailData emailData) {
-        return "Converted Data: " + serializeData(emailData);
     }
 
-    private String serializeData(EmailData emailData) {
-        try {
-            return objectMapper.writeValueAsString(emailData);
-        } catch (JsonProcessingException e) {
-            logger.error("Erro ao serializar EmailData para JSON", e);
-            throw new RuntimeException("Falha ao serializar dados do e-mail.", e);
-        }
-    }
+   
 }
