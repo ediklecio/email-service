@@ -1,4 +1,5 @@
-package com.viasoft.desafioBackEnd;
+package com.viasoft.desafio_back_end;
+
 import com.viasoft.desafioBackEnd.model.EmailData;
 
 import jakarta.validation.ConstraintViolation;
@@ -58,7 +59,7 @@ public class EmailTest {
 	@Test
 	void shouldFailWhenAnyFieldIsBlank() {
 
-		EmailData email = new EmailData("", "Nome Destinatario", "remetente@example.com", "Assunto do Email", "Conteúdo do email.");
+		EmailData email = new EmailData("", "", "", "", "");
 		Set<ConstraintViolation<EmailData>> violations = validator.validate(email);
 
 		assertFalse(violations.isEmpty());

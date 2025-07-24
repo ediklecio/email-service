@@ -19,11 +19,13 @@ public class ConvertDataService {
     private final ObjectMapper objectMapper;
     private final String mailIntegracao;
     private final AwsEmailAdapterService awsEmailAdapterService;
+    private final OciEmailAdapterService ociEmailAdapterService;
 
     public ConvertDataService(
             ObjectMapper objectMapper,
             @Value("${mail.integracao}") String mailIntegracao,
-            AwsEmailAdapterService awsEmailAdapterService) {
+            AwsEmailAdapterService awsEmailAdapterService,
+            OciEmailAdapterService ociEmailAdapterService) {
 
         try {
             EmailProvider.valueOf(mailIntegracao.toUpperCase());
@@ -37,6 +39,7 @@ public class ConvertDataService {
         this.objectMapper = objectMapper;
         this.mailIntegracao = mailIntegracao;
         this.awsEmailAdapterService = awsEmailAdapterService;
+        this.ociEmailAdapterService = ociEmailAdapterService;
     }
 
     public String convertData(EmailData emailData) {
@@ -46,6 +49,9 @@ public class ConvertDataService {
         switch (provider) {
             case AWS:
                 dataToSerialize = awsEmailAdapterService.adapt(emailData);
+                break;
+            case OCI:
+                dataToSerialize = ociEmailAdapterService.adapt(emailData);
                 break;
             default:
                 String errorMessage = String.format("Provedor de e-mail '%s' não implementado.", mailIntegracao);
