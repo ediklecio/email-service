@@ -20,7 +20,8 @@ public class EmailController {
 
     private final ConvertDataService convertDataService;
 
-    public EmailController(ConvertDataService convertDataService) {
+    public EmailController(
+        ConvertDataService convertDataService) {
         this.convertDataService = convertDataService;
     }
 
