@@ -10,15 +10,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.logging.Logger;
-
-import org.hibernate.validator.internal.util.logging.Log_.logger;
-
 @DisplayName("OciEmailAdapterService Test")
 class OciEmailAdapterServiceTest {
 
     private OciEmailAdapterService adapterService;
-        Logger logger = Logger.getLogger(OciEmailAdapterServiceTest.class.getName());
 
     @BeforeEach
     void setUp() {
