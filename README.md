@@ -27,6 +27,12 @@ Para executar o projeto, você precisará ter instalado:
 
 ## Como Executar o Projeto
 
+## Remoto
+http://13.59.132.212/swagger-ui/index.html
+
+
+## Localmente
+
 1.  **Clone o repositório** para a sua máquina local.
 
 2.  **Abra um terminal** ou prompt de comando na pasta raiz do projeto.
