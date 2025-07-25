@@ -2,6 +2,9 @@
 
 Este projeto é uma aplicação Spring Boot desenvolvida como parte do desafio técnico da ViaSoft. A aplicação expõe um endpoint REST para receber dados de e-mail, processá-los e adaptá-los para diferentes provedores de envio.
 
+## Domínio da aplicação
+![Diagrama de Domínio](src/main/resources/static/domain.jpg)
+
 ## Tecnologias Utilizadas
 
 - **Java 17**: Versão da linguagem Java utilizada.
